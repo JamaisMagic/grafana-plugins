@@ -52,31 +52,32 @@ export const plugin = new PanelPlugin<Options, CustomFieldConfig>(TablePanel)
     },
   })
   .setPanelOptions(builder => {
-    builder.addBooleanSwitch({
-      path: 'showHeader',
-      name: 'Show header',
-      description: "To display table's header or not to display",
-      defaultValue: true,
-    })
-    .addTextInput({
-      path: 'fieldNameInstance',
-      name: 'Instance field name',
-      settings: {
-        placeholder: 'instance',
-      },
-    })
-    .addTextInput({
-      path: 'fieldNameTarget',
-      name: 'Target field name',
-      settings: {
-        placeholder: 'target',
-      },
-    })
-    .addTextInput({
-      path: 'fieldNameValue',
-      name: 'Va;lue field name',
-      settings: {
-        placeholder: 'Value',
-      },
-    });
+    builder
+      .addBooleanSwitch({
+        path: 'showHeader',
+        name: 'Show header',
+        description: "To display table's header or not to display",
+        defaultValue: true,
+      })
+      .addTextInput({
+        path: 'fieldNameInstance',
+        name: 'Instance field name',
+        settings: {
+          placeholder: 'instance',
+        },
+      })
+      .addTextInput({
+        path: 'fieldNameTarget',
+        name: 'Target field name',
+        settings: {
+          placeholder: 'target',
+        },
+      })
+      .addTextInput({
+        path: 'fieldNameValue',
+        name: 'Va;lue field name',
+        settings: {
+          placeholder: 'Value',
+        },
+      });
   });

@@ -143,15 +143,15 @@ export class TablePanel extends Component<Props> {
     }
     const data: any = {};
 
-    const instanceArr = fields.filter(item => {
+    const instanceArr = fields.filter((item: any) => {
       const equalName = options.fieldNameInstance || 'instance';
       return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
-    const targetArr = fields.filter(item => {
+    const targetArr = fields.filter((item: any) => {
       const equalName = options.fieldNameTarget || 'target';
       return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
-    const valueArr = fields.filter(item => {
+    const valueArr = fields.filter((item: any) => {
       const equalName = options.fieldNameValue || 'Value';
       return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
@@ -176,7 +176,7 @@ export class TablePanel extends Component<Props> {
     for (let index = 0; index < lengthMin; index++) {
       const item = instanceValuesArr[index];
       if (Array.isArray(data[item])) {
-        const found = data[item].find(dataItem => {
+        const found = data[item].find((dataItem: any) => {
           return dataItem[0] === targetValuesArr[index] && dataItem[1] === valueValuesArr[index];
         });
         if (found) {
@@ -198,8 +198,8 @@ export class TablePanel extends Component<Props> {
         if (i === j) {
           continue;
         }
-        data[dataKeys[j]].forEach(itemJ => {
-          const found = data[dataKeys[i]].find(itemI => itemI[0] === itemJ[0]);
+        data[dataKeys[j]].forEach((itemJ: any) => {
+          const found = data[dataKeys[i]].find((itemI: any) => itemI[0] === itemJ[0]);
           if (!found) {
             data[dataKeys[i]].push([itemJ[0], '-']);
           }
@@ -208,9 +208,7 @@ export class TablePanel extends Component<Props> {
     }
 
     for (let i = 0; i < dataKeys.length; i++) {
-      data[dataKeys[i]] = data[dataKeys[i]].sort((a, b) => {
-        return a[0] - b[0];
-      });
+      data[dataKeys[i]] = data[dataKeys[i]].sort((a: any, b: any) => a[0] - b[0]);
     }
 
     return data;
@@ -223,7 +221,7 @@ export class TablePanel extends Component<Props> {
     const result: any[] = [];
     let dataKeys = Object.keys(data);
 
-    dataKeys = dataKeys.sort((a, b) => a - b);
+    dataKeys = dataKeys.sort();
     for (let i = 0; i < dataKeys.length; i++) {
       result.push({
         config: {
@@ -233,7 +231,7 @@ export class TablePanel extends Component<Props> {
           filterable: false,
         },
         name: dataKeys[i],
-        values: new ArrayVector(data[dataKeys[i]].map(item => item[1])),
+        values: new ArrayVector(data[dataKeys[i]].map((item: any) => item[1])),
         type: 'string',
       });
     }
@@ -245,7 +243,7 @@ export class TablePanel extends Component<Props> {
         filterable: false,
       },
       name: ' ',
-      values: new ArrayVector(data[dataKeys[0]].map(item => item[0])),
+      values: new ArrayVector(data[dataKeys[0]].map((item: any) => item[0])),
       type: 'string',
     });
 
