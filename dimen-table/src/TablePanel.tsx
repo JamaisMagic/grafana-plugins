@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 
 import { Table, Select } from '@grafana/ui';
-import { FieldMatcherID, PanelProps, DataFrame, SelectableValue, getFrameDisplayName, ArrayVector, } from '@grafana/data';
+import {
+  FieldMatcherID,
+  PanelProps,
+  DataFrame,
+  SelectableValue,
+  getFrameDisplayName,
+  ArrayVector,
+} from '@grafana/data';
 import { Options } from './types';
 import { css } from 'emotion';
 // import { config } from 'app/core/config';
@@ -138,14 +145,14 @@ export class TablePanel extends Component<Props> {
 
     const instanceArr = fields.filter(item => {
       const equalName = options.fieldNameInstance || 'instance';
-      return item.name === equalName || (tem.name === `${equalName} #${refId}`;
+      return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
     const targetArr = fields.filter(item => {
-      const equalName = options.fieldNameTarget ||  'target';
+      const equalName = options.fieldNameTarget || 'target';
       return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
     const valueArr = fields.filter(item => {
-      const equalName = options.fieldNameValue ||  'Value';
+      const equalName = options.fieldNameValue || 'Value';
       return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
 
@@ -163,8 +170,8 @@ export class TablePanel extends Component<Props> {
 
     const lengthMin = Math.min(instanceValuesArr.length, 300000);
 
-    console.log('waiting');
-    console.time('waiting');
+    // console.log('waiting');
+    // console.time('waiting');
 
     for (let index = 0; index < lengthMin; index++) {
       const item = instanceValuesArr[index];
@@ -181,8 +188,8 @@ export class TablePanel extends Component<Props> {
       }
     }
 
-    console.log('waiting finished');
-    console.timeEnd('waiting');
+    // console.log('waiting finished');
+    // console.timeEnd('waiting');
 
     const dataKeys = Object.keys(data);
 
