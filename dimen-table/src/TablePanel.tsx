@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Table, Select } from '@grafana/ui';
-import { FieldMatcherID, PanelProps, DataFrame, SelectableValue, getFrameDisplayName, ArrayVector } from '@grafana/data';
+import { FieldMatcherID, PanelProps, DataFrame, SelectableValue, getFrameDisplayName, ArrayVector, } from '@grafana/data';
 import { Options } from './types';
 import { css } from 'emotion';
 // import { config } from 'app/core/config';
@@ -136,17 +136,17 @@ export class TablePanel extends Component<Props> {
     }
     const data: any = {};
 
-    const instanceArr = fields.filter((item) => {
+    const instanceArr = fields.filter(item => {
       const equalName = options.fieldNameInstance || 'instance';
-      return (item.name === equalName) || (item.name === `${equalName} #${refId}`);
+      return item.name === equalName || (tem.name === `${equalName} #${refId}`;
     })[0];
-    const targetArr = fields.filter((item) => {
+    const targetArr = fields.filter(item => {
       const equalName = options.fieldNameTarget ||  'target';
-      return (item.name === equalName) || (item.name === `${equalName} #${refId}`);
+      return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
-    const valueArr = fields.filter((item) => {
+    const valueArr = fields.filter(item => {
       const equalName = options.fieldNameValue ||  'Value';
-      return (item.name === equalName) || (item.name === `${equalName} #${refId}`);
+      return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
 
     if (!instanceArr || !targetArr || !valueArr) {
@@ -169,8 +169,8 @@ export class TablePanel extends Component<Props> {
     for (let index = 0; index < lengthMin; index++) {
       const item = instanceValuesArr[index];
       if (Array.isArray(data[item])) {
-        const found = data[item].find((dataItem) => {
-          return (dataItem[0] === targetValuesArr[index]) && (dataItem[1] === valueValuesArr[index]);
+        const found = data[item].find(dataItem => {
+          return dataItem[0] === targetValuesArr[index] && dataItem[1] === valueValuesArr[index];
         });
         if (found) {
           continue;
@@ -191,8 +191,8 @@ export class TablePanel extends Component<Props> {
         if (i === j) {
           continue;
         }
-        data[dataKeys[j]].forEach((itemJ) => {
-          const found = data[dataKeys[i]].find((itemI) => itemI[0] === itemJ[0]);
+        data[dataKeys[j]].forEach(itemJ => {
+          const found = data[dataKeys[i]].find(itemI => itemI[0] === itemJ[0]);
           if (!found) {
             data[dataKeys[i]].push([itemJ[0], '-']);
           }
@@ -213,10 +213,10 @@ export class TablePanel extends Component<Props> {
     if (!data) {
       return [];
     }
-    const result: Array<any> = [];
+    const result: any[] = [];
     let dataKeys = Object.keys(data);
 
-    dataKeys = dataKeys.sort((a, b) => {return a - b;});
+    dataKeys = dataKeys.sort((a, b) => a - b);
     for (let i = 0; i < dataKeys.length; i++) {
       result.push({
         config: {
@@ -226,8 +226,8 @@ export class TablePanel extends Component<Props> {
           filterable: false,
         },
         name: dataKeys[i],
-        values: new ArrayVector(data[dataKeys[i]].map((item) => item[1])),
-        type: 'string'
+        values: new ArrayVector(data[dataKeys[i]].map(item => item[1])),
+        type: 'string',
       });
     }
     result.unshift({
@@ -238,8 +238,8 @@ export class TablePanel extends Component<Props> {
         filterable: false,
       },
       name: ' ',
-      values: new ArrayVector(data[dataKeys[0]].map((item) => item[0])),
-      type: 'string'
+      values: new ArrayVector(data[dataKeys[0]].map(item => item[0])),
+      type: 'string',
     });
 
     return result;
