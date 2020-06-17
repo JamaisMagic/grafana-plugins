@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Table, Select } from '@grafana/ui';
-import { FieldMatcherID, PanelProps, DataFrame, SelectableValue, getFrameDisplayName } from '@grafana/data';
+import { FieldMatcherID, PanelProps, DataFrame, SelectableValue, getFrameDisplayName, ArrayVector } from '@grafana/data';
 import { Options } from './types';
 import { css } from 'emotion';
 // import { config } from 'app/core/config';
@@ -88,6 +88,15 @@ export class TablePanel extends Component<Props> {
   render() {
     const { data, height, width } = this.props;
 
+    if (data.series && data.series.length > 0 && data.series[0]?.fields[0]?.config?.custom?.isModified !== true) {
+      data.series.forEach((seriesItem, index) => {
+        const handleResult = this.dataToFields(this.handleData(seriesItem));
+        if (handleResult && handleResult.length > 0) {
+          seriesItem.fields = handleResult;
+        }
+      });
+    }
+
     const count = data.series?.length;
 
     if (!count || count < 1) {
@@ -117,6 +126,123 @@ export class TablePanel extends Component<Props> {
     }
 
     return this.renderTable(data.series[0], width, height - 12);
+  }
+
+  handleData(seriesItem: any) {
+    const { options } = this.props;
+    const { fields, refId } = seriesItem;
+    if (!fields || fields.length <= 0) {
+      return null;
+    }
+    const data: any = {};
+
+    const instanceArr = fields.filter((item) => {
+      const equalName = options.fieldNameInstance || 'instance';
+      return (item.name === equalName) || (item.name === `${equalName} #${refId}`);
+    })[0];
+    const targetArr = fields.filter((item) => {
+      const equalName = options.fieldNameTarget ||  'target';
+      return (item.name === equalName) || (item.name === `${equalName} #${refId}`);
+    })[0];
+    const valueArr = fields.filter((item) => {
+      const equalName = options.fieldNameValue ||  'Value';
+      return (item.name === equalName) || (item.name === `${equalName} #${refId}`);
+    })[0];
+
+    if (!instanceArr || !targetArr || !valueArr) {
+      return null;
+    }
+
+    instanceArr.values.reverse();
+    targetArr.values.reverse();
+    valueArr.values.reverse();
+
+    const instanceValuesArr = instanceArr.values.toArray();
+    const targetValuesArr = targetArr.values.toArray();
+    const valueValuesArr = valueArr.values.toArray();
+
+    const lengthMin = Math.min(instanceValuesArr.length, 300000);
+
+    console.log('waiting');
+    console.time('waiting');
+
+    for (let index = 0; index < lengthMin; index++) {
+      const item = instanceValuesArr[index];
+      if (Array.isArray(data[item])) {
+        const found = data[item].find((dataItem) => {
+          return (dataItem[0] === targetValuesArr[index]) && (dataItem[1] === valueValuesArr[index]);
+        });
+        if (found) {
+          continue;
+        }
+        data[item].push([targetValuesArr[index], valueValuesArr[index]]);
+      } else {
+        data[item] = [[targetValuesArr[index], valueValuesArr[index]]];
+      }
+    }
+
+    console.log('waiting finished');
+    console.timeEnd('waiting');
+
+    const dataKeys = Object.keys(data);
+
+    for (let i = 0; i < dataKeys.length; i++) {
+      for (let j = 0; j < dataKeys.length; j++) {
+        if (i === j) {
+          continue;
+        }
+        data[dataKeys[j]].forEach((itemJ) => {
+          const found = data[dataKeys[i]].find((itemI) => itemI[0] === itemJ[0]);
+          if (!found) {
+            data[dataKeys[i]].push([itemJ[0], '-']);
+          }
+        });
+      }
+    }
+
+    for (let i = 0; i < dataKeys.length; i++) {
+      data[dataKeys[i]] = data[dataKeys[i]].sort((a, b) => {
+        return a[0] - b[0];
+      });
+    }
+
+    return data;
+  }
+
+  dataToFields(data: any) {
+    if (!data) {
+      return [];
+    }
+    const result: Array<any> = [];
+    let dataKeys = Object.keys(data);
+
+    dataKeys = dataKeys.sort((a, b) => {return a - b;});
+    for (let i = 0; i < dataKeys.length; i++) {
+      result.push({
+        config: {
+          custom: {
+            isModified: true,
+          },
+          filterable: false,
+        },
+        name: dataKeys[i],
+        values: new ArrayVector(data[dataKeys[i]].map((item) => item[1])),
+        type: 'string'
+      });
+    }
+    result.unshift({
+      config: {
+        custom: {
+          isModified: true,
+        },
+        filterable: false,
+      },
+      name: ' ',
+      values: new ArrayVector(data[dataKeys[0]].map((item) => item[0])),
+      type: 'string'
+    });
+
+    return result;
   }
 }
 
