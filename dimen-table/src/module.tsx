@@ -72,12 +72,5 @@ export const plugin = new PanelPlugin<Options, CustomFieldConfig>(TablePanel)
         settings: {
           placeholder: 'target',
         },
-      })
-      .addTextInput({
-        path: 'fieldNameValue',
-        name: 'Va;lue field name',
-        settings: {
-          placeholder: 'Value',
-        },
       });
   });

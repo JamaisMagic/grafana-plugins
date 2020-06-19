@@ -97,7 +97,7 @@ export class TablePanel extends Component<Props> {
 
     if (data.series && data.series.length > 0 && data.series[0]?.fields[0]?.config?.custom?.isModified !== true) {
       data.series.forEach((seriesItem, index) => {
-        const handleResult = this.dataToFields(this.handleData(seriesItem));
+        const handleResult = this.dataToFields(this.handleData(seriesItem), seriesItem.refId);
         if (handleResult && handleResult.length > 0) {
           seriesItem.fields = handleResult;
         }
@@ -152,7 +152,7 @@ export class TablePanel extends Component<Props> {
       return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
     const valueArr = fields.filter((item: any) => {
-      const equalName = options.fieldNameValue || 'Value';
+      const equalName = 'Value';
       return item.name === equalName || item.name === `${equalName} #${refId}`;
     })[0];
 
@@ -168,10 +168,7 @@ export class TablePanel extends Component<Props> {
     const targetValuesArr = targetArr.values.toArray();
     const valueValuesArr = valueArr.values.toArray();
 
-    const lengthMin = Math.min(instanceValuesArr.length, 300000);
-
-    // console.log('waiting');
-    // console.time('waiting');
+    const lengthMin = Math.min(instanceValuesArr.length, 100000);
 
     for (let index = 0; index < lengthMin; index++) {
       const item = instanceValuesArr[index];
@@ -187,9 +184,6 @@ export class TablePanel extends Component<Props> {
         data[item] = [[targetValuesArr[index], valueValuesArr[index]]];
       }
     }
-
-    // console.log('waiting finished');
-    // console.timeEnd('waiting');
 
     const dataKeys = Object.keys(data);
 
@@ -214,7 +208,7 @@ export class TablePanel extends Component<Props> {
     return data;
   }
 
-  dataToFields(data: any) {
+  dataToFields(data: any, refId: string = ' ') {
     if (!data) {
       return [];
     }
@@ -242,7 +236,7 @@ export class TablePanel extends Component<Props> {
         },
         filterable: false,
       },
-      name: ' ',
+      name: refId,
       values: new ArrayVector(data[dataKeys[0]].map((item: any) => item[0])),
       type: 'string',
     });
