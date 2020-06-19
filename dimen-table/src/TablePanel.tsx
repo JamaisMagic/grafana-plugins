@@ -94,6 +94,7 @@ export class TablePanel extends Component<Props> {
 
   render() {
     const { data, height, width } = this.props;
+    console.log('data: ', data);
 
     if (data.series && data.series.length > 0 && data.series[0]?.fields[0]?.config?.custom?.isModified !== true) {
       data.series.forEach((seriesItem, index) => {
@@ -160,10 +161,6 @@ export class TablePanel extends Component<Props> {
       return null;
     }
 
-    instanceArr.values.reverse();
-    targetArr.values.reverse();
-    valueArr.values.reverse();
-
     const instanceValuesArr = instanceArr.values.toArray();
     const targetValuesArr = targetArr.values.toArray();
     const valueValuesArr = valueArr.values.toArray();
@@ -201,9 +198,7 @@ export class TablePanel extends Component<Props> {
       }
     }
 
-    for (let i = 0; i < dataKeys.length; i++) {
-      data[dataKeys[i]] = data[dataKeys[i]].sort((a: any, b: any) => a[0] - b[0]);
-    }
+    console.log('data2: ', data);
 
     return data;
   }
@@ -215,7 +210,6 @@ export class TablePanel extends Component<Props> {
     const result: any[] = [];
     let dataKeys = Object.keys(data);
 
-    dataKeys = dataKeys.sort();
     for (let i = 0; i < dataKeys.length; i++) {
       result.push({
         config: {
