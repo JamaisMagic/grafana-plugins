@@ -208,7 +208,7 @@ export class TablePanel extends Component<Props> {
     return data;
   }
 
-  dataToFields(data: any, refId: string = ' ') {
+  dataToFields(data: any, refId = ' ') {
     if (!data) {
       return [];
     }
