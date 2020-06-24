@@ -201,7 +201,7 @@ export class TablePanel extends Component<Props> {
 
     for (let i = 0; i < dataKeys.length; i++) {
       data[dataKeys[i]] = data[dataKeys[i]].sort((a: any, b: any) => {
-        return a[0].replace(/\D+/gi, '') - b[0].replace(/\D+/gi, '');
+        return `${a[0]}`.localeCompare(b[0]);
       });
     }
 
