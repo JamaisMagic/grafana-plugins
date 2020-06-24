@@ -214,6 +214,9 @@ export class TablePanel extends Component<Props> {
     }
     const result: any[] = [];
     let dataKeys = Object.keys(data);
+    dataKeys = dataKeys.sort((a: any, b: any) => {
+      return `${a}`.localeCompare(b);
+    });
 
     for (let i = 0; i < dataKeys.length; i++) {
       result.push({
