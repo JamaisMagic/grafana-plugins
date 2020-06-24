@@ -94,13 +94,14 @@ export class TablePanel extends Component<Props> {
 
   render() {
     const { data, height, width } = this.props;
-    console.log('data: ', data);
 
     if (data.series && data.series.length > 0 && data.series[0]?.fields[0]?.config?.custom?.isModified !== true) {
       data.series.forEach((seriesItem, index) => {
-        const handleResult = this.dataToFields(this.handleData(seriesItem), seriesItem.refId);
+        const [handledData, valueConfig, displayFn] = this.handleData(seriesItem);
+        const handleResult = this.dataToFields(handledData, seriesItem.refId, valueConfig, displayFn);
         if (handleResult && handleResult.length > 0) {
           seriesItem.fields = handleResult;
+          seriesItem.length = handleResult[0].values.length;
         }
       });
     }
@@ -200,16 +201,14 @@ export class TablePanel extends Component<Props> {
 
     for (let i = 0; i < dataKeys.length; i++) {
       data[dataKeys[i]] = data[dataKeys[i]].sort((a: any, b: any) => {
-        return a[0].replace(/\D+/gi, '') - b[0].replace(/\D+/gi, '');
+        return `${a[0]}`.localeCompare(b[0]);
       });
     }
 
-    console.log('data2: ', data);
-
-    return data;
+    return [data, valueArr.config, valueArr.display];
   }
 
-  dataToFields(data: any, refId = ' ') {
+  dataToFields(data: any, refId = ' ', valueConfig = { custom: {} }, displayFn: Function) {
     if (!data) {
       return [];
     }
@@ -219,11 +218,14 @@ export class TablePanel extends Component<Props> {
     for (let i = 0; i < dataKeys.length; i++) {
       result.push({
         config: {
+          ...valueConfig,
           custom: {
+            ...valueConfig.custom,
             isModified: true,
           },
           filterable: false,
         },
+        display: displayFn,
         name: dataKeys[i],
         values: new ArrayVector(data[dataKeys[i]].map((item: any) => item[1])),
         type: 'string',
